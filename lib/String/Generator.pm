@@ -77,7 +77,7 @@ sub _gen_string {
 sub _exact {
     my ( $self, $node ) = @_;
     say '_exact: ' . $node->raw();
-    return $node->raw();
+    return $node->data();
 }
 
 sub _quant {

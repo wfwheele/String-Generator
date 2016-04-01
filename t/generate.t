@@ -16,4 +16,5 @@ like($str_gen->generate('[ab]'), qr/[ab]/, '[ab]');
 like($str_gen->generate('[ab]{3}'), qr/[ab]{3}/, '[ab]{3}');
 is($str_gen->generate('[(a)]'), 'a', '[(a)]');
 like($str_gen->generate('(a|b)'), qr/(a|b)/, '(a|b)');
+is($str_gen->generate('\['), '[', '\[');
 done_testing();
