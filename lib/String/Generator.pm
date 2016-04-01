@@ -97,15 +97,15 @@ sub _quant {
 
 sub _anyof {
     my ( $self, $node, $iter ) = @_;
-    my $string = q//;
-    my $next   = $iter->();
-		my @options = ();
+    my $string  = q//;
+    my $next    = $iter->();
+    my @options = ();
     while ( $next->family() ne 'close' and $next->type() ne 'anyof_close' ) {
         my $method = '_' . $next->family();
         push @options, $self->$method( $next, $iter );
-				$next = $iter->();
+        $next = $iter->();
     }
-		$string = $options[$self->_rand_range(0, $#options)];
+    $string = $options[ $self->_rand_range( 0, $#options ) ];
     return $string;
 }
 
