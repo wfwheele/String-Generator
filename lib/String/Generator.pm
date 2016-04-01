@@ -156,7 +156,7 @@ sub _rand_range {
 
 =head1 AUTHOR
 
-William F Wheeler, C<< <wfwheele at gmail.com> >>
+William F Wheeler II, C<< <wfwheele at gmail.com> >>
 
 =head1 BUGS
 
