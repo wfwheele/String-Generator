@@ -5,6 +5,7 @@ use warnings;
 use Regexp::Parser;
 use Moose;
 use feature qw/say/;
+use Data::Dumper;
 
 =head1 NAME
 
@@ -97,13 +98,20 @@ sub _quant {
 sub _anyof {
     my ( $self, $node, $iter ) = @_;
     my $string = q//;
-
+    my $next   = $iter->();
+		my @options = ();
+    while ( $next->family() ne 'close' and $next->type() ne 'anyof_close' ) {
+        my $method = '_' . $next->family();
+        push @options, $self->$method( $next, $iter );
+				$next = $iter->();
+    }
+		$string = $options[$self->_rand_range(0, $#options)];
     return $string;
 }
 
 sub _anyof_char {
-    my ( $self, $node, $iter ) = @_;
-    return q//;
+    my ( $self, $node ) = @_;
+    return $node->data();
 }
 
 sub _anyof_range {
