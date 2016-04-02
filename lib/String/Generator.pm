@@ -111,8 +111,7 @@ has 'unicode_high' => (
 
 sub generate {
     my ( $self, $regex ) = @_;
-    my $parser = Regexp::Parser->new();
-    confess $parser->errmsg if !$parser->regex($regex);
+    my $parser = Regexp::Parser->new($regex);
     return $self->_gen_string( q//, $parser->walker );
 }
 
@@ -156,7 +155,7 @@ sub _anyof {
     my $string  = q//;
     my $next    = $iter->();
     my @options = ();
-    while ( $next->family() ne 'close' and $next->type() ne 'anyof_close' ) {
+    while ( $next->type() ne 'anyof_close' ) {
         my $method = '_' . $next->family();
         push @options, $self->$method( $next, $iter );
         $next = $iter->();
@@ -201,9 +200,7 @@ sub _open {
     my @options = ();
     my ( undef, $capture_number ) = split( 'open', $node->type() );
     say "_open #" . $capture_number;
-    while ( $next->family() ne 'close'
-        and $next->type() ne 'close' . $capture_number )
-    {
+    while ( $next->type() ne 'close' . $capture_number ) {
         if ( $next->family() eq 'branch' ) {
             $next = $iter->();
             next;
@@ -216,11 +213,6 @@ sub _open {
     return $string;
 }
 
-sub _branch {
-    my ($self) = @_;
-    return q//;
-}
-
 sub _digit {
     my ( $self, $node ) = @_;
     return $self->_rand_range( 0, 9 );
@@ -229,30 +221,31 @@ sub _digit {
 sub _quantity_from_raw {
     my ( $self, $raw ) = @_;
     if ( $raw =~ qr/\?/ ) {
-        return rand(1);
+        return $self->_rand_range( 0, 1 );
     }
     elsif ( $raw =~ qr/^\{(\d),(\d)\}$/ ) {
+        say 'quantity range';
         return $self->_rand_range( $1, $2 );
     }
     elsif ( $raw =~ qr/\{(\d)\}/ ) {
+        say "quant was digit";
         return $1;
     }
     elsif ( $raw eq '+' ) {
+        say "quant was +";
         return $self->_rand_range( 1, $self->max_repeat() );
     }
-    elsif ( $raw eq '*' ) {
+    else {
+        #raw eq *
+        say 'quant was star';
         return $self->_rand_range( 0, $self->max_repeat() );
     }
-    elsif ( $raw eq '?' ) {
-        return $self->_rand_range( 0, 1 );
-    }
-    return;
 }
 
 sub _rand_range {
     my ( $self, $min, $max ) = @_;
     return $min if $min == $max;
-    return $min + int( rand( $max - $min ) ) + 1;
+    return $min + int( rand( $max - $min + 1 ) );
 }
 
 =head1 AUTHOR

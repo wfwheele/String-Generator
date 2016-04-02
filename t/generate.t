@@ -1,15 +1,20 @@
 use strict;
 use warnings;
 use Test::More;
+use Test::Exception;
 use String::Generator;
 
 my $str_gen = String::Generator->new();
+
+dies_ok { $str_gen->generate('{3}') } 'dies on regex parse error';
+
 is( $str_gen->generate('a'), 'a' );
-like( $str_gen->generate('ab?'), qr/ab?/ );
-like( $str_gen->generate('ab+'), qr/ab+/ );
-like( $str_gen->generate('a?'),  qr/a?/ );
-like( $str_gen->generate('a+'),  qr/a+/ );
-like( $str_gen->generate('a*'),  qr/a*/ );
+like( $str_gen->generate('ab?'),    qr/ab?/ );
+like( $str_gen->generate('a{2,3}'), qr/a{2,3}/, 'a{2,3}' );
+like( $str_gen->generate('ab+'),    qr/ab+/ );
+like( $str_gen->generate('a?'),     qr/a?/ );
+like( $str_gen->generate('a+'),     qr/a+/ );
+like( $str_gen->generate('a*'),     qr/a*/ );
 is( $str_gen->generate('a{3}'), 'aaa' );
 is( $str_gen->generate('ab{2}'), 'abb', 'ab{2}' );
 like( $str_gen->generate('[ab]'),       qr/[ab]/,       '[ab]' );
