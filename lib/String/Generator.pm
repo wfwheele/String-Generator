@@ -58,9 +58,9 @@ negated character sets in their pattern.
 =cut
 
 has 'unicode_low' => (
-	is => 'rw',
-	isa => 'Int',
-	default => 0,
+    is      => 'rw',
+    isa     => 'Int',
+    default => 0,
 );
 
 =head2 unicode_high
@@ -73,9 +73,9 @@ So if you only want ACSII values set this to 255
 =cut
 
 has 'unicode_high' => (
-	is => 'rw',
-	isa => 'Int',
-	default => 65536,
+    is      => 'rw',
+    isa     => 'Int',
+    default => 65536,
 );
 
 =head1 SUBROUTINES/METHODS
@@ -160,6 +160,13 @@ sub _anyof_range {
     );
     say 'anyof_range letter: ' . $letter;
     return $letter;
+}
+
+sub _reg_any {
+    my ($self) = @_;
+    return
+        chr(
+        $self->_rand_range( $self->unicode_low(), $self->unicode_high() ) );
 }
 
 sub _open {
