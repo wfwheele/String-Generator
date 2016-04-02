@@ -38,11 +38,14 @@ if you don't export anything, such as for a purely object-oriented module.
 =head1 ATTRIBUTES
 
 =head2 max_repeat
+
 determines the max range of repition in patterns which use * or + quantifiers
 Set in the contructor
+
 	my $generator = String::Generator->new({max_repeat => 50});
 	#or via accessor
 	$generator->max_repeat(2);
+
 =cut
 
 has 'max_repeat' => (
@@ -52,9 +55,21 @@ has 'max_repeat' => (
 );
 
 =head2 unicode_low
+
 To be used in conjunction with unicode_high attribute to specify a unicode
 range to use when determining random values for patterns which use '.' or
-negated character sets in their pattern.
+negated character sets in their pattern.  For example if you wanted only
+Katakana characters you could
+	my $generator = String::Generator->new(
+	{
+		unicode_low => 12448,
+		unicode_high => 12543,
+	});
+	#or via accessor
+	$generator->unicode_low(12448);
+
+Note: this must be an integer
+
 =cut
 
 has 'unicode_low' => (
@@ -64,12 +79,18 @@ has 'unicode_low' => (
 );
 
 =head2 unicode_high
+
 Determines the max range in unicode to use for random patterns which random
 values such those using the '.' or negated character sets like [^\d]{2}.
-So if you only want ACSII values set this to 255
+To be used in conjunction with unicode_low. So if you only want ACSII values set
+this to 255
+
 	my $generator = String::Generator->new({unicode_high => 255});
 	#or via accessor
 	$generator->unicode_high(255);
+
+Note: this must be an integer
+
 =cut
 
 has 'unicode_high' => (
