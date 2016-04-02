@@ -5,4 +5,4 @@ use String::Generator;
 use feature qw/say/;
 
 my $gen = String::Generator->new();
-say $gen->generate('[ab]');
+say $gen->generate('[a-z]');

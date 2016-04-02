@@ -70,6 +70,7 @@ sub _gen_string {
     # return $current . $self->$type($node) if $self->can($type);
     while ( my $node = $iter->() ) {
         my $type = '_' . $node->family();
+				say '_gen_string: ' . $type;
         $string .= $self->$type( $node, $iter );
     }
     return $string;
@@ -105,6 +106,8 @@ sub _anyof {
         push @options, $self->$method( $next, $iter );
         $next = $iter->();
     }
+		say '_anyof: ' . $#options;
+		say 'pick: ' . $self->_rand_range(0, 0);
     $string = $options[ $self->_rand_range( 0, $#options ) ];
     return $string;
 }
@@ -115,8 +118,18 @@ sub _anyof_char {
 }
 
 sub _anyof_range {
-    my ( $self, $node, $iter ) = @_;
-    return q//;
+    my ( $self, $node ) = @_;
+		say 'anyof_range';
+    my $range_ref = $node->data();
+		say 'anyof_range: ' . $range_ref->[0]->data();
+    my $letter    = chr(
+        $self->_rand_range(
+            ord( $range_ref->[0]->data() ),
+            ord( $range_ref->[1]->data() )
+        )
+    );
+		say 'anyof_range letter: ' . $letter;
+    return $letter;
 }
 
 sub _close {
@@ -159,6 +172,7 @@ sub _quantity_from_raw {
 
 sub _rand_range {
     my ( $self, $min, $max ) = @_;
+		return $min if $min == $max;
     return $min + int( rand( $max - $min ) ) + 1;
 }
 
