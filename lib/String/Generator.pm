@@ -46,6 +46,8 @@ Set in the contructor
 	#or via accessor
 	$generator->max_repeat(2);
 
+Default is 10
+
 =cut
 
 has 'max_repeat' => (
@@ -69,6 +71,7 @@ Katakana characters you could
 	$generator->unicode_low(12448);
 
 Note: this must be an integer
+Defaults to 0
 
 =cut
 
@@ -90,6 +93,7 @@ this to 255
 	$generator->unicode_high(255);
 
 Note: this must be an integer
+Defaults to 65536
 
 =cut
 
