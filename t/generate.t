@@ -23,7 +23,7 @@ like( $str_gen->generate('[a-z]'), qr/[a-z]/, '[a-z]' );
 like( $str_gen->generate('[0-9]'), qr/[0-9]/, '[0-9]' );
 like( $str_gen->generate('a-z0-9'), qr/[a-z0-9]/ );
 like( $str_gen->generate('1-5'), qr/[1-5]/, '[1-5]' );
-like($str_gen->generate('\d'), 'qr/\d/', '\d');
+like($str_gen->generate('\d'), qr/\d/, '\d');
 like($str_gen->generate('\d{3}'), qr/\d{3}/, '\d{3}');
 like($str_gen->generate('(\d{3}){2}'), qr/\d{6}/, '(\d{3}){2}');
 done_testing();

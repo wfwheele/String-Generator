@@ -150,13 +150,18 @@ sub _open {
         push @options, $self->$method( $next, $iter );
         $next = $iter->();
     }
-		$string = $options[ $self->_rand_range( 0, $#options ) ];
+    $string = $options[ $self->_rand_range( 0, $#options ) ];
     return $string;
 }
 
 sub _branch {
     my ($self) = @_;
     return q//;
+}
+
+sub _digit {
+    my ( $self, $node ) = @_;
+    return $self->_rand_range( 0, 9 );
 }
 
 sub _quantity_from_raw {
