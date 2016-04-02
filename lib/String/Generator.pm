@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Regexp::Parser;
 use Moose;
-use feature qw/say/;
+use feature qw/say unicode_strings/;
 use Data::Dumper;
 
 =head1 NAME
@@ -36,12 +36,46 @@ A list of functions that can be exported.  You can delete this section
 if you don't export anything, such as for a purely object-oriented module.
 
 =head1 ATTRIBUTES
+
+=head2 max_repeat
+determines the max range of repition in patterns which use * or + quantifiers
+Set in the contructor
+	my $generator = String::Generator->new({max_repeat => 50});
+	#or via accessor
+	$generator->max_repeat(2);
 =cut
 
 has 'max_repeat' => (
     is      => 'rw',
     isa     => 'Int',
     default => '10',
+);
+
+=head2 unicode_low
+To be used in conjunction with unicode_high attribute to specify a unicode
+range to use when determining random values for patterns which use '.' or
+negated character sets in their pattern. 
+=cut
+
+has 'unicode_low' => (
+	is => 'rw',
+	isa => 'Int',
+	default => 0,
+);
+
+=head2 unicode_high
+Determines the max range in unicode to use for random patterns which random
+values such those using the '.' or negated character sets like [^\d]{2}.
+So if you only want ACSII values set this to 255
+	my $generator = String::Generator->new({unicode_high => 255});
+	#or via accessor
+	$generator->unicode_high(255);
+=cut
+
+has 'unicode_high' => (
+	is => 'rw',
+	isa => 'Int',
+	default => 65536,
 );
 
 =head1 SUBROUTINES/METHODS
