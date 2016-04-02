@@ -54,7 +54,7 @@ has 'max_repeat' => (
 =head2 unicode_low
 To be used in conjunction with unicode_high attribute to specify a unicode
 range to use when determining random values for patterns which use '.' or
-negated character sets in their pattern. 
+negated character sets in their pattern.
 =cut
 
 has 'unicode_low' => (
@@ -80,7 +80,7 @@ has 'unicode_high' => (
 
 =head1 SUBROUTINES/METHODS
 
-=head2 function1
+=head2 generate
 
 =cut
 
@@ -90,10 +90,6 @@ sub generate {
     confess $parser->errmsg if !$parser->regex($regex);
     return $self->_gen_string( q//, $parser->walker );
 }
-
-=head2 function2
-
-=cut
 
 sub _gen_string {
     my ( $self, $string, $iter ) = @_;
