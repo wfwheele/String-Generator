@@ -130,25 +130,31 @@ sub _gen_string {
 }
 
 sub _exact {
-    my ( $self, $node ) = @_;
-    return $node->data();
-}
-
-sub _quant {
-    my ( $self, $node, $iter ) = @_;
-    my $string        = q//;
-    my $quantity      = $self->_quantity_from_raw( $node->raw() );
-    my $next          = $iter->();
-    my $method        = '_' . $next->family();
-    my $repeat_string = $self->$method( $next, $iter );
-    for ( 1 .. $quantity ) {
-        $string .= $repeat_string;
+    my ( $self, $node, undef, $quant ) = @_;
+    my $string = q//;
+    for ( 1 .. ( defined $quant ? $quant : 1 ) ) {
+        $string .= $node->data();
     }
     return $string;
 }
 
-sub _anyof {
+sub _quant {
     my ( $self, $node, $iter ) = @_;
+    my $string   = q//;
+    my $quantity = $self->_quantity_from_raw( $node->raw() );
+    my $next     = $iter->();
+    my $method   = '_' . $next->family();
+
+    # my $repeat_string = $self->$method( $next, $iter );
+    # for ( 1 .. $quantity ) {
+    #     $string .= $repeat_string;
+    # }
+    $string .= $self->$method( $next, $iter, $quantity );
+    return $string;
+}
+
+sub _anyof {
+    my ( $self, $node, $iter, $quant ) = @_;
     my $string  = q//;
     my $next    = $iter->();
     my @options = ();
@@ -157,7 +163,9 @@ sub _anyof {
         push @options, $self->$method( $next, $iter );
         $next = $iter->();
     }
-    $string = $options[ $self->_rand_range( 0, $#options ) ];
+    for ( 1 .. ( defined $quant ? $quant : 1 ) ) {
+        $string .= $options[ $self->_rand_range( 0, $#options ) ];
+    }
     return $string;
 }
 
@@ -179,14 +187,17 @@ sub _anyof_range {
 }
 
 sub _reg_any {
-    my ($self) = @_;
-    return
-        chr(
-        $self->_rand_range( $self->unicode_low(), $self->unicode_high() ) );
+    my ( $self, undef, undef, $quant ) = @_;
+    my $string = q//;
+    for ( 1 .. ( defined $quant ? $quant : 1 ) ) {
+        $string .= chr(
+            $self->_rand_range( $self->unicode_low(), $self->unicode_high() ) );
+    }
+    return $string;
 }
 
 sub _open {
-    my ( $self, $node, $iter ) = @_;
+    my ( $self, $node, $iter, $quant ) = @_;
     my $string  = q//;
     my $next    = $iter->();
     my @options = ();
@@ -200,13 +211,19 @@ sub _open {
         push @options, $self->$method( $next, $iter );
         $next = $iter->();
     }
-    $string = $options[ $self->_rand_range( 0, $#options ) ];
+    for ( 1 .. ( defined $quant ? $quant : 1 ) ) {
+        $string .= $options[ $self->_rand_range( 0, $#options ) ];
+    }
     return $string;
 }
 
 sub _digit {
-    my ( $self, $node ) = @_;
-    return $self->_rand_range( 0, 9 );
+    my ( $self, $node, undef, $quant ) = @_;
+    my $string = q//;
+    for ( 1 .. ( defined $quant ? $quant : 1 ) ) {
+        $string .= $self->_rand_range( 0, 9 );
+    }
+    return $string;
 }
 
 sub _quantity_from_raw {
