@@ -124,7 +124,6 @@ sub _gen_string {
     # return $current . $self->$type($node) if $self->can($type);
     while ( my $node = $iter->() ) {
         my $type = '_' . $node->family();
-        say '_gen_string: ' . $type;
         $string .= $self->$type( $node, $iter );
     }
     return $string;
@@ -132,15 +131,13 @@ sub _gen_string {
 
 sub _exact {
     my ( $self, $node ) = @_;
-    say '_exact: ' . $node->raw();
     return $node->data();
 }
 
 sub _quant {
     my ( $self, $node, $iter ) = @_;
-    my $string   = q//;
-    my $quantity = $self->_quantity_from_raw( $node->raw() );
-    say '_quant: ' . $quantity;
+    my $string        = q//;
+    my $quantity      = $self->_quantity_from_raw( $node->raw() );
     my $next          = $iter->();
     my $method        = '_' . $next->family();
     my $repeat_string = $self->$method( $next, $iter );
@@ -160,8 +157,6 @@ sub _anyof {
         push @options, $self->$method( $next, $iter );
         $next = $iter->();
     }
-    say '_anyof: ' . $#options;
-    say 'pick: ' . $self->_rand_range( 0, 0 );
     $string = $options[ $self->_rand_range( 0, $#options ) ];
     return $string;
 }
@@ -173,16 +168,13 @@ sub _anyof_char {
 
 sub _anyof_range {
     my ( $self, $node ) = @_;
-    say 'anyof_range';
     my $range_ref = $node->data();
-    say 'anyof_range: ' . $range_ref->[0]->data();
-    my $letter = chr(
+    my $letter    = chr(
         $self->_rand_range(
             ord( $range_ref->[0]->data() ),
             ord( $range_ref->[1]->data() )
         )
     );
-    say 'anyof_range letter: ' . $letter;
     return $letter;
 }
 
@@ -199,7 +191,6 @@ sub _open {
     my $next    = $iter->();
     my @options = ();
     my ( undef, $capture_number ) = split( 'open', $node->type() );
-    say "_open #" . $capture_number;
     while ( $next->type() ne 'close' . $capture_number ) {
         if ( $next->family() eq 'branch' ) {
             $next = $iter->();
@@ -224,20 +215,16 @@ sub _quantity_from_raw {
         return $self->_rand_range( 0, 1 );
     }
     elsif ( $raw =~ qr/^\{(\d),(\d)\}$/ ) {
-        say 'quantity range';
         return $self->_rand_range( $1, $2 );
     }
     elsif ( $raw =~ qr/\{(\d)\}/ ) {
-        say "quant was digit";
         return $1;
     }
     elsif ( $raw eq '+' ) {
-        say "quant was +";
         return $self->_rand_range( 1, $self->max_repeat() );
     }
     else {
         #raw eq *
-        say 'quant was star';
         return $self->_rand_range( 0, $self->max_repeat() );
     }
 }
