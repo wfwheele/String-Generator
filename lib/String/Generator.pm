@@ -144,11 +144,6 @@ sub _quant {
     my $quantity = $self->_quantity_from_raw( $node->raw() );
     my $next     = $iter->();
     my $method   = '_' . $next->family();
-
-    # my $repeat_string = $self->$method( $next, $iter );
-    # for ( 1 .. $quantity ) {
-    #     $string .= $repeat_string;
-    # }
     $string .= $self->$method( $next, $iter, $quantity );
     return $string;
 }
@@ -177,13 +172,13 @@ sub _anyof_char {
 sub _anyof_range {
     my ( $self, $node ) = @_;
     my $range_ref = $node->data();
-    my $letter    = chr(
-        $self->_rand_range(
-            ord( $range_ref->[0]->data() ),
-            ord( $range_ref->[1]->data() )
-        )
-    );
-    return $letter;
+    my @letters   = ();
+    for my $char_num (
+        ord( $range_ref->[0]->data() ) .. ord( $range_ref->[1]->data() ) )
+    {
+        push @letters, chr($char_num);
+    }
+    return @letters;
 }
 
 sub _reg_any {
@@ -234,7 +229,7 @@ sub _quantity_from_raw {
     elsif ( $raw =~ qr/^\{(\d),(\d)\}$/ ) {
         return $self->_rand_range( $1, $2 );
     }
-    elsif ( $raw =~ qr/\{(\d)\}/ ) {
+    elsif ( $raw =~ qr/\{(\d+)\}/ ) {
         return $1;
     }
     elsif ( $raw eq '+' ) {

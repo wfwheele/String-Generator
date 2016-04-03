@@ -7,6 +7,6 @@ use feature qw/say/;
 my $gen = String::Generator->new();
 for( 0 .. 10){
 		say "START";
-		say $gen->generate('(a|b|c){3}');
+		say $gen->generate('[a-zA-Z0-9]{10}');
 		say "END";
 }
